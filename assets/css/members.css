@@ -1,0 +1,242 @@
+@charset "UTF-8";
+/* CSS Document */
+@media screen
+{
+body {
+	background: url('../../assets/images/texture_brushed_metal.jpg');
+	font-family: Arial, Helvetica, sans-serif;
+}
+#content {
+	background: white;
+	padding: 30px;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	margin-top: 30px;
+	border: 10px solid #777;
+	margin-bottom: 80px;
+}
+#wrapper {
+	width: 1020px;
+	margin: 0 auto;
+	display: block;
+
+}
+#narrow {
+	width: 720px;
+	margin: 0 auto;
+	display: block;
+
+}
+#ultra_narrow {
+	width: 400px;
+	margin: 0 auto;
+	display: block;
+}
+#topNav {
+	display: none;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	background: white;
+	border: 1px solid black;
+	height: 50px;
+}
+label {
+	font-size: .8em;
+	display: block;
+	color: #aaa;
+}
+label.normal {
+	color: black;
+}
+tr.interest_desc {
+	height: 30px;
+	vertical-align: top;
+	font-size: 0.8em;
+}
+.hr_lite {
+	background: #ccc;
+	height: 1px;
+	display: block;
+	margin: 40px 0px;
+}
+table.roster {
+	border-collapse: collapse;
+	width: 100%;
+	border: 2px solid black;
+	clear: both;
+}
+table.roster th {
+	background: black;
+	color: white;
+	text-align: left;
+	padding: 10px 5px 10px 7px;
+	font-size: 14px;
+	font-weight: normal;
+}
+table.roster tr td {
+	padding: 10px 7px;
+	font-size: 12px;
+}
+table.roster tr.hiddenRow {
+	display: none;
+}
+table.roster tr.odd td {
+	background: #eee;
+}
+table.roster a img {
+	border: none;
+	margin-right: 5px;
+}
+/*
+#quicksearch {
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	display: block;
+	background: #eee;
+	padding: 15px;
+	margin-bottom: 30px;
+	clear: both;
+}
+*/
+#quicksearch label {
+	color: black;
+	display: inline;
+}/*
+#quicksearch input {
+	font-size: 20px;
+	padding: 5px 5px 2px 45px;
+	background-image:url(http://localhost/wybc/assets/images/icon_search_2.jpg);
+	background-position:3% center;
+	background-repeat:no-repeat;
+}*/
+#quicksearch
+{
+	display: block;
+	width: 280px;
+	float: left;
+}
+#quicksearch input{
+	font-size: 16px;
+	padding: 10px 10px 6px 50px;
+	background-image:url(../../assets/images/icon_search_3.png);
+	background-position:5% center;
+	background-repeat:no-repeat;
+	border: 1px solid #ccc;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	margin-bottom: 33px;
+}
+.loadertext
+{
+	display: none;
+}
+#toggler {
+	margin-bottom: 20px;
+	display: block;
+	width: 560px;
+	float: right;
+	padding-top: 9px;
+}
+#toggler a {
+	float: right;
+}
+a.status_button {
+	font-size: 12px;
+	color: black;
+	display: block;
+	float: left;
+	margin-right: 6px;
+	text-decoration: none;
+	padding: 8px 8px 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border: 1px solid #eee;
+}
+a.status_button:hover {
+	border: 1px solid #ccc;
+}
+a.status_button:active {
+	outline: none;
+}
+a.active_status_button {
+	background: black;
+	color: white;
+}
+
+img#heading_img {
+	margin-top: 15px;
+	margin-bottom: 60px;
+}
+a.osx_button {
+	height: 43px;
+	background-position: top center;
+	display: block;
+	width: 168px;
+	outline: none;
+	margin-top: 10px;
+}
+a.osx_button:active {
+	outline: none;
+	background-position: bottom center;
+}
+
+a#newMember {
+	background-image: url('../images/sprite_newmemberbutton.png');
+	float: right;
+}
+a#exportData {
+	background-image: url('../images/sprite_exportbutton.png');
+}
+#bottomBar {
+	position: fixed;
+	bottom:0;
+	left: 5px;
+	right: 5px;
+	height: 25px;
+	background: white;
+	z-index: 3;
+	padding: 10px 0px 4px;
+	/*background: url('../images/bottombar.png');*/
+	background: white;
+	border-top: 2px solid #aaa;
+	color: black;
+	font-size: 11px;
+}
+#export_options {
+	background: #eee;
+	-moz-border-radius: 10px;
+	padding: 20px;
+}
+.exportBucket{
+	display: block;
+	width: 128px;
+	padding: 20px 10px;
+	margin-right: 20px;
+	float: left;
+	text-align: center;
+	font-size: 12px;
+	-moz-border-radius: 10px;
+	border: 1px solid #ccc;
+	text-decoration: none;
+	color: black;
+}
+.exportBucket:hover {
+	border: 1px solid #333;
+}
+.exportBucket img {
+	display: block;
+	border: none;
+	margin-bottom: 20px;
+}
+.appSec {
+	font-weight: bold; 
+	margin-top: 20px; 
+	display: block; 
+	margin-bottom: 20px;
+}
+}
+@media print {
+
+	.page-break { height:0; page-break-before:always; margin:0; border-top:none; }
+}
+
