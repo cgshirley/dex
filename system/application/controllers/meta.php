@@ -381,7 +381,7 @@ var $user_id;
 	{
 		if(!empty($_POST))
 		{
-			$this->load->model('member_management');
+			$this->load->library('member_management');
 			$this->member_management->update_status($_POST['status'], $_POST['nid']);
 			$this->notify->save("status_updated", $this->member_id, array("status"=>$_POST['status']));
 		}

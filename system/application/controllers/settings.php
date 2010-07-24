@@ -12,7 +12,7 @@ function Settings()
 		$this->load->helper('url');
 		$this->auth->restrict(1);
 		$this->data['css'][] =  "smoothness/jquery-ui.css";
-		$this->load->model('member_management');
+		$this->load->library('member_management');
 		$this->member_id = $this->session->userdata('member_id');
 		$this->user_id = $this->session->userdata('user_id');
 	}

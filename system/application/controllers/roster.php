@@ -7,7 +7,7 @@ var $data;
 	function Roster()
 	{
 		parent::Controller();
-		$this->load->model('member_management');
+		$this->load->library('member_management');
 		$this->data['js'] = array();
 		$this->data['css'] = array();
 		$this->data['js'][] = "jquery-quicksearch.js";
