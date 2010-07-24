@@ -21,6 +21,7 @@ function Settings()
 		$this->data['title']="Settings";
 		$this->load->view('header', $this->data);
 		$this->load->view('settings', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function password()
 	{
@@ -109,6 +110,7 @@ function Settings()
 		
 		$this->load->view('header', $this->data);
 		$this->load->view('roster/edit', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function squads( $id = NULL, $id2 = NULL )
 	{
@@ -164,7 +166,8 @@ function Settings()
 				$this->data['css'][] = 'colorbox.css';
 				$this->data['css'][] = 'datatables.css';
 				$this->load->view('header', $this->data);
-				$this->load->view('settings/squads', $this->data);	
+				$this->load->view('settings/squads', $this->data);
+				$this->load->view('footer', $this->data);
 			}
 		}
 	}
@@ -174,6 +177,7 @@ function Settings()
 		$this->data['user_id'] = $this->session->userdata('user_id');
 		$this->load->view("header", $this->data);
 		$this->load->view("settings/password", $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function _profile_form()
 	{
@@ -183,7 +187,9 @@ function Settings()
 		$this->data['ckeditor'] = TRUE;
 		$this->data['profile'] = $this->drupal->load_profile($this->data['user_id']);
 		$this->load->view("header", $this->data);
-		$this->load->view("settings/profile", $this->data);	
+		$this->load->view("settings/profile", $this->data);
+		$this->load->view('footer', $this->data);
+
 	}
 	
 	function notifications( $type, $member_id, $otherdata = NULL )

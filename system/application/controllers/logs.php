@@ -22,6 +22,7 @@ class Logs extends Controller {
 		$this->data['title']="Engineering Logs";
 		$this->load->view('header', $this->data);
 		$this->load->view('logs/index', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function tickets()
 	{
@@ -47,6 +48,7 @@ class Logs extends Controller {
 		$this->data['tickets'] = $this->logs_model->load_tickets($filter);
 		$this->load->view('header', $this->data);
 		$this->load->view('logs/tickets', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function ticket()
 	{
@@ -82,6 +84,7 @@ class Logs extends Controller {
 		$this->data['responses'] = $info['responses'];
 		$this->load->view('header', $this->data);
 		$this->load->view('logs/ticket', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function _new_ticket()
 	{
@@ -91,6 +94,7 @@ class Logs extends Controller {
 		$this->data['admin'] = TRUE;
 		$this->load->view('header', $this->data);
 		$this->load->view('help/ticket', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function _new_response()
 	{

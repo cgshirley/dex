@@ -15,6 +15,7 @@ function Admin()
 		$this->data['title']="Admin";
 		$this->load->view('header', $this->data);
 		$this->load->view('admin/index', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function pages( $method = NULL, $id = NULL )
 	{
@@ -27,6 +28,7 @@ function Admin()
 			$this->data['ckeditor'] = TRUE;
 			$this->load->view('header', $this->data);
 			$this->load->view('admin/pages/edit', $this->data);
+			$this->load->view('footer', $this->data);
 		}
 		elseif($method == "save")
 		{
@@ -48,6 +50,7 @@ function Admin()
 			$this->data['css'][] = "datatables.css";			
 			$this->load->view('header', $this->data);
 			$this->load->view('admin/pages/list', $this->data);
+			$this->load->view('footer', $this->data);
 		}
 	}
 	

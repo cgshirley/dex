@@ -28,6 +28,7 @@ var $user_id;
 		$this->data['title']="WYBC META";
 		$this->load->view('header', $this->data);
 		$this->load->view('meta/index', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function episodes()
 	{
@@ -36,6 +37,7 @@ var $user_id;
 		$this->data['shows']=$this->drupal->list_shows();
 		$this->load->view('header', $this->data);
 		$this->load->view('meta/episodes', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function playlist( $id = NULL )
 	{
@@ -55,6 +57,8 @@ var $user_id;
 			//$this->load->view('header', $this->data);
 			$this->load->view('alt_header', $this->data);
 			$this->load->view('meta/playlist', $this->data);
+			$this->load->view('footer', $this->data);
+
 		}
 	}
 	function admin()
@@ -62,6 +66,7 @@ var $user_id;
 		$this->data['title'] = "WYBC Meta | Admin Control Panel";
 		$this->load->view('header', $this->data);
 		$this->load->view('meta/admin', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function logs()
 	{
@@ -72,6 +77,7 @@ var $user_id;
 		$this->data['logs'] = $this->songtracker->get_logs('count',250);
 		$this->load->view('header', $this->data);
 		$this->load->view('meta/logs', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function charts()
 	{
@@ -95,6 +101,8 @@ var $user_id;
 				$this->load->view('meta/charts', $this->data);
 				break;
 		}
+		$this->load->view('footer', $this->data);
+
 	}
 	function collage()
 	{
@@ -102,6 +110,7 @@ var $user_id;
 		$this->data['logs'] = $this->songtracker->get_logs("count", 100);
 		$this->load->view('header', $this->data);
 		$this->load->view('meta/collage', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function stream()
 	{
@@ -109,6 +118,7 @@ var $user_id;
 		$this->data['logs'] = $this->songtracker->get_logs("count", 100);
 		$this->load->view('header', $this->data);
 		$this->load->view('meta/stream', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function artists()
 	{
@@ -118,7 +128,9 @@ var $user_id;
 		$artists = $this->db->query("SELECT * FROM music_artists");
 		$this->data['artists'] = $artists->result_array();
 		$this->load->view('header', $this->data);
-		$this->load->view('meta/artists', $this->data);	
+		$this->load->view('meta/artists', $this->data);
+		$this->load->view('footer', $this->data);
+
 	}
 	function albums()
 	{
@@ -149,8 +161,9 @@ var $user_id;
 									ORDER BY album_title");
 			$this->data['albums'] = $album_info->result_array();
 			$this->load->view('header', $this->data);
-			$this->load->view('meta/albums/index', $this->data);	
+			$this->load->view('meta/albums/index', $this->data);
 		}
+		$this->load->view('footer', $this->data);
 	}
 	function flags()
 	{
@@ -161,6 +174,7 @@ var $user_id;
 		$this->data['flags'] = $this->songtracker->load_flags();
 		$this->load->view('header', $this->data);
 		$this->load->view('meta/flags', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function clean_artists()
 	{
@@ -202,6 +216,7 @@ var $user_id;
 		$this->data['css'][] = "datatables.css";
 		$this->load->view('header', $this->data);
 		$this->load->view("meta/clean_artists",$this->data);
+		$this->load->view('footer', $this->data);
 	}
 	
 	function ajaxData()
@@ -334,10 +349,6 @@ var $user_id;
 	function archives( $id )
 	{	
 		$dir = "/Volumes/sharkhives/".$id.".mp3";
-	//	$dir = "/Volumes/sharkhives/sherwinisawesome.mp3";
-	//	$dir = "/Users/macservadmin/favicon.ico";
-		//echo $dir."<br />";
-		//var_dump(file_exists($dir));
 		$file=$dir;
 		header("Content-type: application/force-download");
 		header("Content-Transfer-Encoding: Binary");

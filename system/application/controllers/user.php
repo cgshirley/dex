@@ -37,12 +37,15 @@ class User extends Controller {
 		$this->data['title'] = "Goodbye!";
 		$this->load->view('header', $this->data);
 		$this->load->view('user/logout', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function restricted()
 	{
 		$this->data['title'] = "Access Restricted";
 		$this->load->view('header', $this->data);
 		$this->load->view('restricted');
+		$this->load->view('footer', $this->data);
+
 	}
 	function _login_form( $error = NULL, $email = NULL )
 	{
@@ -51,6 +54,7 @@ class User extends Controller {
 		$this->data['title']="Login";
 		$this->load->view('header', $this->data);
 		$this->load->view('user/login', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 }
 ?>

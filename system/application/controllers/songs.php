@@ -14,6 +14,7 @@ class Songs extends Controller {
 		$data['shows']=$this->songtracker->get_shows();
 		$this->load->view('songs/header', $data);
 		$this->load->view('songs/episodes', $data);
+		$this->load->view('footer', $this->data);
 	}
 	function playlist()
 	{
@@ -21,12 +22,14 @@ class Songs extends Controller {
 		//$data['shows']=$this->songtracker->load_playlist();
 		$this->load->view('songs/header', $data);
 		$this->load->view('songs/playlist'/*, $data*/);
+		$this->load->view('footer', $this->data);
 	}
 	function admin()
 	{
 		$data['title'] = "WYBC Meta | Admin Control Panel";
 		$this->load->view('songs/header', $data);
 		$this->load->view('songs/admin', $data);
+		$this->load->view('footer', $this->data);
 	}
 	function artists()
 	{
