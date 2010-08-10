@@ -7,7 +7,7 @@ var $data;
 	function Roster()
 	{
 		parent::Controller();
-		$this->load->model('member_management');
+		$this->load->library('member_management');
 		$this->data['js'] = array();
 		$this->data['css'] = array();
 		$this->data['js'][] = "jquery-quicksearch.js";
@@ -62,6 +62,7 @@ var $data;
 			$this->data['add'] = TRUE; // sets to add new member mode, not edit mode
 			$this->load->view('header', $this->data);
 			$this->load->view('roster/edit', $this->data);
+			$this->load->view('footer', $this->data);
 		}
 	}
 	function save()
@@ -183,7 +184,7 @@ var $data;
 		$this->data['status'] = $this->member_management->lister('status');
 		$this->load->view('header', $this->data);
 		$this->load->view('roster/roster', $this->data);
-		
+		$this->load->view('footer', $this->data);
 	}
 	function phonebook()
 	{
@@ -193,6 +194,7 @@ var $data;
 		$this->data['title'] = 'Roster';
 		$this->load->view('header', $this->data);
 		$this->load->view('roster/phonebook', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 
 	function edit( $id = NULL ) 
@@ -239,6 +241,7 @@ var $data;
 			
 			$this->load->view('header', $this->data);
 			$this->load->view('roster/edit', $this->data);
+			$this->load->view('footer', $this->data);
 		}
 		
 	}
@@ -251,6 +254,7 @@ var $data;
 		$this->data['member_data'] = $this->member_management->member_data($this->uri->segment(3));
 		$this->load->view('header', $this->data);
 		$this->load->view('roster/view', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 
 	function export()
@@ -270,6 +274,8 @@ var $data;
 			$this->data['title'] = "The WYBC Application";
 			$this->load->view('roster/application_header', $this->data);
 			$this->load->view('roster/select_app_external', $this->data);
+			$this->load->view('footer', $this->data);
+
 		}
 		elseif($app=="info")
 		{
@@ -286,6 +292,7 @@ var $data;
 			
 			$this->load->view('roster/application_header', $this->data);
 			$this->load->view('roster/app_info', $this->data);	
+			$this->load->view('footer', $this->data);
 		}
 		else
 		{
@@ -309,12 +316,14 @@ var $data;
 			$this->load->helper('form');
 			$this->load->view('roster/application_header', $this->data);
 			$this->load->view('roster/add', $this->data);
+			$this->load->view('footer', $this->data);
 		}
 	}
 	function app_submitted()
 	{
 		$this->load->view('roster/application_header', $this-data);
 		$this->load->view('roster/app_submitted', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	
 	function revisions ( $id = NULL )
@@ -327,6 +336,7 @@ var $data;
 			$this->data['revisions'] = $q->result_array();
 			$this->load->view('header', $this->data);
 			$this->load->view('roster/revisions_list', $this->data);
+			$this->load->view('footer', $this->data);
 		}
 		elseif($id=="approved")
 		{
@@ -393,6 +403,7 @@ var $data;
 			$this->data['title'] = "Approve Member Edits";
 			$this->load->view('header', $this->data);
 			$this->load->view('roster/revisions_review', $this->data);
+			$this->load->view('footer', $this->data);
 		}
 	}
 
@@ -419,6 +430,7 @@ var $data;
 			$this->data['accountless_count'] = $query2->num_rows;
 			$this->load->view('header', $this->data);
 			$this->load->view('roster/drupal', $this->data);
+			$this->load->view('footer', $this->data);
 		}
 	}
 	function _add_drupal_account( $user ) //passed user DB object
@@ -529,6 +541,7 @@ var $data;
 			/*$this->data['js'][] = 'songtracker-ui.php';
 			$this->load->view('header', $this->data);*/
 			$this->load->view('roster/events/new', $this->data);
+			$this->load->view('footer', $this->data);
 		}
 	}
 	function _events_list()
@@ -543,6 +556,7 @@ var $data;
 		$this->data['events'] = $q->result();
 		$this->load->view('header', $this->data);
 		$this->load->view('roster/events/list', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	
 	function _events_view( $id = NULL)
@@ -557,6 +571,8 @@ var $data;
 		$this->data['attendees'] = $q2->result();
 		$this->load->view('header', $this->data);
 		$this->load->view('roster/events/view', $this->data);
+		$this->load->view('footer', $this->data);
+
 	}
 	
 	function notifications( $type, $member_id, $otherdata = NULL )
@@ -738,118 +754,7 @@ var $data;
 			$this->data['js'][] = 'jquery-datatables.php';
 			$this->load->view('header', $this->data);
 			$this->load->view('roster/squads/admin', $this->data);
+			$this->load->view('footer', $this->data);
 		}
-	}
-	/*function revised()
-	{
-$this->load->view('header', $this->data);
-$q = $this->db->where('update_id', 7)->get('member_updates');
-		$r = $q->row();
-		echo $r->update_data;
-		echo "<br /><br /><br />";
-		unserialize(utf8_decode($r->update_data))
-	}
-	
-	/* DEPRECATED 
-	function verify()
-	{
-		$this->load->model('member_management');
-		$this->load->helper('url');
-		
-		if ( $this->uri->segment(3)!="" )
-		{
-			// If member_id is present as the 4th URI segment...
-			// After user clicks name on roster, this page loads which generates a special key, emails it to them, and then tells them what is going on
-			if ( $this->uri->segment(3)=="thanks" && $this->uri->segment(4)!="" )
-			{
-				$this->data['title'] = "Email Sent | WYBC Data Verification";
-				$this->data['hide_footer']=true;
-				$this->data['wrapper']='narrow';
-				$this->load->view('header', $this->data);
-				echo $this->member_management->verification($this->uri->segment(4));
-				echo "Bombs away! The email has been sent. It should be in your inbox momentarily. Thank you!";
-				
-			}
-			else 
-			{
-				$query = $this->db->query("SELECT * FROM email_keys WHERE sess_key = '".$this->uri->segment(3)."'");
-				if ( $query->num_rows!=1 )
-				{
-					$this->data['title'] = 'Invalid Key | WYBC';
-					$this->data['wrapper'] = 'narrow';
-					$this->data['hide_footer']=true;
-					$this->load->view('header', $this->data);
-					echo "You have used an invalid key. Please <a href='".site_url('roster/verify')."'>click here to resend an email with a proper verification key.</a>";
-					
-				}
-				else
-				{
-					$this->db->query("DELETE FROM email_keys WHERE sess_key = ".$this->uri->segment(3));
-					$row = $query->row();
-					$member_id=$row->member_id;
-					$this->data['title'] = 'Verify Your Member Data | WYBC';
-					$this->data['heading'] = 'Verify Your Member Data';
-					$this->data['heading_img'] = 'editanexistingmember.png';
-					$this->data['wrapper'] = 'narrow';
-					$this->data['hide_footer']=true;
-					$this->data['teams'] = $this->member_management->lister('teams');
-					$this->data['interests'] = $this->member_management->lister('interests');
-					$this->data['statii'] = $this->member_management->lister('status');
-					$this->data['members'] = $this->member_management->member_data($member_id);
-					$this->load->helper('form');
-					$this->load->view('header', $this->data);
-					$this->load->view('roster/add', $this->data);
-					
-				}
-			}
-		}
-		else
-		{
-			$this->data['title'] = 'Verify Your Identity | WYBC';
-			$this->data['hide_footer']=true;
-			$this->data['roster'] = $this->member_management->roster("");
-			$this->data['status'] = $this->member_management->lister('status');
-			$this->load->view('header', $this->data);
-			$this->load->view('roster/verify_roster', $this->data);
-			
-		}
-	}
-	*/	
-	
-	
-/*
-	function new_mail()
-	{
-		$this->load->view('members/mail');
-	}
-	function send_mail()
-	{
-		$this->load->library('email');
-		$config['protocol'] = 'mail';
-		$config['mailtype'] = 'html';
-		
-		$this->email->initialize($config);
-		
-		
-		$this->email->from("no-reply@wybc.com");
-		$this->email->to($_POST['to']);
-		//$this->email->cc('another@another-example.com');
-		//$this->email->bcc('them@their-example.com');
-		
-		$this->email->subject($_POST['subject']);
-		$html = "<html><head><title>".$_POST['subject']."</title></head><body>";
-		$html .= $_POST['email'];
-		$html .= "</body></html>";
-		$this->email->message($html);
-		
-		$this->email->send();
-		echo "<pre>";
-		print_r($_POST);
-		echo "</pre>";
-		echo $this->email->print_debugger();
-	}
-*/
-	
+	}	
 }
-/* End of file members.php */
-/* Location: ./system/application/controllers/members.php */

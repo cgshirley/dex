@@ -2,14 +2,15 @@
 
 class Root extends Controller {
 
-var $data;
+	var $data;
 
-function Root()
+	function __construct()
 	{
-		parent::Controller();
+		parent::__construct();
 		//$this->load->model('songtracker');
 		$this->load->helper('url');
 	}
+	
 	function index()
 	{
 		$this->load->library('simplepie');
@@ -24,23 +25,6 @@ function Root()
 		$this->data['title']="WYBC DEX";
 		$this->load->view('header', $this->data);
 		$this->load->view('index', $this->data);
-			
-		
-		
+		$this->load->view('footer', $this->data);
 	}
-	function login()
-	{
-		// process login
-		if(!empty($_POST))
-		{
-		
-		}
-		//or display form
-		$this->load->view('root/login');
-	}
-	
-	
 }
-
-/* End of file welcome.php */
-/* Location: ./system/application/controllers/welcome.php */

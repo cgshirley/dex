@@ -1,6 +1,7 @@
 <?php
-class Member_management extends Model {
-
+class Member_management{
+	
+	var $CI;
     	var $title   = '';
     	var $content = '';
     	var $date    = '';
@@ -94,11 +95,9 @@ class Member_management extends Model {
 						"reference_two_relationship"=>"Reference Two Relationship",
 						"department"=>"department");
 
-    	function Member_management()
+    	function __construct()
     	{
-       		// Call the Model constructor
-        	parent::Model();
-		$this->load->database();
+		$this->CI =& get_instance();
     	}
     	
 	function prep_member_data( $data )
@@ -141,7 +140,7 @@ class Member_management extends Model {
 				$this->save_revision($this->member_id, $this->member_data, "edit");
 				
 				// Save revision into DB
-				$this->db->where('member_id', $this->member_id)->update("member_data", $this->member_data);
+				$this->CI->db->where('member_id', $this->member_id)->update("member_data", $this->member_data);
 			}
 			
 			// Admin-approved member data revision [made by a member]
@@ -155,15 +154,15 @@ class Member_management extends Model {
 				$this->prep_member_data($revised);
 
 				// Update data
-				$this->db->where('member_id', $this->member_id)->update("member_data", $this->member_data);
+				$this->CI->db->where('member_id', $this->member_id)->update("member_data", $this->member_data);
 				
 				// Mark revision as approved
-				$this->db->where('id', $id)->update('member_revisions', array('approved'=>1));
+				$this->CI->db->where('id', $id)->update('member_revisions', array('approved'=>1));
 			}
 			// Admin-approved dj profile revision [made by a member]
 			elseif($method=="approved_profile")
 			{
-				$this->load->library('drupal');
+				$this->CI->load->library('drupal');
 				
 				// Prep data
 				$revision_info = $this->get_revision($id);
@@ -175,19 +174,19 @@ class Member_management extends Model {
 				$where = "nid=".$revised['nid'];
 				
 				//Prep queries
-				$sql1 = $this->db->update_string("node_revisions", $revisions, $where);
-				$sql2 = $this->db->update_string("content_type_profile", $profile, $where);
-				$sql3 = $this->db->update_string("url_alias", array("dst"=>"dj/".$alias), "src=`node/".$revised['nid']."`");
-				$sql4 = $this->db->update_string("url_alias", array("dst"=>"dj/".$alias."/feed"), "src='node/".$revised['nid']."/feed'");
+				$sql1 = $this->CI->db->update_string("node_revisions", $revisions, $where);
+				$sql2 = $this->CI->db->update_string("content_type_profile", $profile, $where);
+				$sql3 = $this->CI->db->update_string("url_alias", array("dst"=>"dj/".$alias), "src=`node/".$revised['nid']."`");
+				$sql4 = $this->CI->db->update_string("url_alias", array("dst"=>"dj/".$alias."/feed"), "src='node/".$revised['nid']."/feed'");
 				
 				// Run queries
-				$this->drupal->api_call($sql1);
-				$this->drupal->api_call($sql2);
-				$this->drupal->api_call($sql3);
-				$this->drupal->api_call($sql4);
+				$this->CI->drupal->api_call($sql1);
+				$this->CI->drupal->api_call($sql2);
+				$this->CI->drupal->api_call($sql3);
+				$this->CI->drupal->api_call($sql4);
 				
 				// Mark revision as approved
-				$this->db->where('id', $id)->update('member_revisions', array('approved'=>1));
+				$this->CI->db->where('id', $id)->update('member_revisions', array('approved'=>1));
 			}
 
 			
@@ -196,8 +195,8 @@ class Member_management extends Model {
 		else
 		{
 			// Save app into DB
-			$this->db->insert("member_data",$this->member_data);
-			$this->member_id = $this->db->insert_id();
+			$this->CI->db->insert("member_data",$this->member_data);
+			$this->member_id = $this->CI->db->insert_id();
 			if(isset($_POST['training'])) $this->invite($this->member_id, $_POST['training']);
 			
 			// What type of revision?
@@ -227,7 +226,7 @@ class Member_management extends Model {
 		elseif(empty($this->member_id)&&empty($member_id))
 			return false;
 		
-		$current_query = $this->db->select('team_id')->where('member_id', $this->member_id)->get('team_roster');
+		$current_query = $this->CI->db->select('team_id')->where('member_id', $this->member_id)->get('team_roster');
 		$current_teams = $current_query->result_array();
 		
 		foreach($current_teams as $key=>$val)
@@ -239,12 +238,12 @@ class Member_management extends Model {
 		foreach ( $added as $val )
 		{
 			$data = array ( "team_id"=>$val, "member_id"=>$this->member_id);
-			$this->db->insert("team_roster", $data);
+			$this->CI->db->insert("team_roster", $data);
 		}
 		
 		foreach ( $removed as $val )
 		{
-			$this->db->where('member_id',$this->member_id)->where('team_id', $val)->delete('team_roster');
+			$this->CI->db->where('member_id',$this->member_id)->where('team_id', $val)->delete('team_roster');
 		}
 		
 		return array ( "added"=>$added, "removed"=>$removed);
@@ -253,16 +252,16 @@ class Member_management extends Model {
 	function save_revision ( $member_id, $revision, $type, $date = null, $stop = NULL, $approved = NULL )
 	{
 		if($type=="profile")
-			$this->load->library('drupal');
+			$this->CI->load->library('drupal');
 		
 		// If this is the first time this function has been called
 		if (!$stop&&($type=="edit"||$type=="update"))
 		{
 			// Check to see if the current version has been saved yet.
-			$q = $this->db->where('member_id', $member_id)->where('type !=', 'profile')->get('member_revisions');
+			$q = $this->CI->db->where('member_id', $member_id)->where('type !=', 'profile')->get('member_revisions');
 			if($q->num_rows==0)
 			{
-				$member_data_query = $this->db->where('member_id', $member_id)->get('member_data');
+				$member_data_query = $this->CI->db->where('member_id', $member_id)->get('member_data');
 				$member_data = $member_data_query->row_array();
 
 				// If present, use the timestamp from the application's creation as revision's timestamp
@@ -279,10 +278,10 @@ class Member_management extends Model {
 		elseif (!$stop&&$type=="profile")
 		{
 			// Check to see if the current version has been saved yet
-			$q = $this->db->where('member_id', $member_id)->where('type !=', 'profile')->get('member_revisions');
+			$q = $this->CI->db->where('member_id', $member_id)->where('type !=', 'profile')->get('member_revisions');
 			if($q->num_rows==0)
 			{
-				$raw_data = $this->drupal->load_profile( $member_id );
+				$raw_data = $this->CI->drupal->load_profile( $member_id );
 				$current_data = array ( 	"field_status_value"=>$raw_data['status'], 
 									"field_hometown_value"=>$raw_data['hometown'],
 									"title"=>$raw_data['name'],
@@ -305,26 +304,26 @@ class Member_management extends Model {
 		
 		if($type=="new"||$type=="apply"||$type=="edit"||$approved==TRUE) $data['approved'] = 1;
 		else $data['approved'] = 0;
-		$this->db->insert('member_revisions', $data);
-		return $this->db->insert_id();
+		$this->CI->db->insert('member_revisions', $data);
+		return $this->CI->db->insert_id();
 	}
 	function update_status($status, $nid )
 	{
-		$this->load->library('drupal');
+		$this->CI->load->library('drupal');
 		// Prep data
 		$profile = array ( "field_status_value"=>$status);
 		$where = "nid=".$nid;
 		//Prep queries
-		$sql = $this->db->update_string("content_type_profile", $profile, $where);
+		$sql = $this->CI->db->update_string("content_type_profile", $profile, $where);
 		// Run queries
-		$this->drupal->api_call($sql);
+		$this->CI->drupal->api_call($sql);
 	}
 	function roster( $where )
 	{
 		if ( substr($where, 0, 4)=="team")
 		{
 			$bits = explode("=",$where);
-			$query = $this->db->query("SELECT * FROM `member_data` AS M JOIN `team_roster` AS T ON M.member_id = T.member_id  JOIN member_status AS s ON m.status_id=s.status_id WHERE T.team_id = ".$bits[1]);
+			$query = $this->CI->db->query("SELECT * FROM `member_data` AS M JOIN `team_roster` AS T ON M.member_id = T.member_id  JOIN member_status AS s ON m.status_id=s.status_id WHERE T.team_id = ".$bits[1]);
 		}
 		else
 		{
@@ -333,7 +332,7 @@ class Member_management extends Model {
 			else
 				$where_clause = "";
 				
-			$query = $this->db->query("SELECT * FROM member_data AS m INNER JOIN member_status AS s ON m.status_id=s.status_id ".$where_clause." ORDER BY m.last_name ASC");
+			$query = $this->CI->db->query("SELECT * FROM member_data AS m INNER JOIN member_status AS s ON m.status_id=s.status_id ".$where_clause." ORDER BY m.last_name ASC");
 		}
 		$roster = array();
 		foreach ( $query->result() as $num => $row )
@@ -348,7 +347,7 @@ class Member_management extends Model {
 
 	function member_data( $id )
 	{
-		$query = $this->db->query("SELECT * FROM member_data AS m INNER JOIN member_status AS s ON m.status_id=s.status_id WHERE m.member_id=".$id." ORDER BY m.last_name ASC");
+		$query = $this->CI->db->query("SELECT * FROM member_data AS m INNER JOIN member_status AS s ON m.status_id=s.status_id WHERE m.member_id=".$id." ORDER BY m.last_name ASC");
 		$data = array();
 		foreach ( $query->row() as $key => $val )
 		{
@@ -358,13 +357,13 @@ class Member_management extends Model {
 		if(!empty($data['email_yale'])) $data['email'] = $data['email_yale'];
 		else $data['email'] = $data['email_personal'];
 		
-		$teamsQuery = $this->db->query("SELECT * FROM team_roster WHERE member_id=".$id);
+		$teamsQuery = $this->CI->db->query("SELECT * FROM team_roster WHERE member_id=".$id);
 		$data['teams']=array();
 		foreach($teamsQuery->result() as $key=>$val)
 		{
 			$data['teams'][$val->team_id]=TRUE;
 		}
-		$interestsQuery = $this->db->query("SELECT * FROM interests_roster WHERE member_id=".$id);
+		$interestsQuery = $this->CI->db->query("SELECT * FROM interests_roster WHERE member_id=".$id);
 		$data['interests']=array();
 		foreach($interestsQuery->result() as $key=>$val)
 		{
@@ -377,7 +376,7 @@ class Member_management extends Model {
 		switch ( $type )
 		{
 			case "roster":
-				$this->load->library('parser');
+				$this->CI->load->library('parser');
 				$data['edit'] = $_POST['edit'];
 				$data['drupal'] = $this->drupal_path;
 				$data['base_url'] = base_url(); 
@@ -389,14 +388,14 @@ class Member_management extends Model {
 					}
 				}
 				$data['roster'] = $roster;
-				$str =  $this->parser->parse('templates/roster_row', $data, TRUE);
+				$str =  $this->CI->parser->parse('templates/roster_row', $data, TRUE);
 				$str = str_replace(array("\r\n", "\r", "\n", "\t"), ' ', $str);
 				$str = str_replace(",]","]",$str);
 				echo $str;
 				break;
 			case "teams":
 				$teams = array();
-				$query = $this->db->query('SELECT * FROM team_data WHERE team_status=1 ORDER BY sort_order ASC');
+				$query = $this->CI->db->query('SELECT * FROM team_data WHERE team_status=1 ORDER BY sort_order ASC');
 				foreach ( $query->result() as $row )
 				{
 					$teams[] = array ( "id" => $row->team_id, "title" => $row->team_title, "description" => $row->team_description);
@@ -405,7 +404,7 @@ class Member_management extends Model {
 				break;
 			case "interests":
 				$interests = array();
-				$query = $this->db->query('SELECT * FROM interests_data WHERE interest_status=1 ORDER BY sort_order ASC');
+				$query = $this->CI->db->query('SELECT * FROM interests_data WHERE interest_status=1 ORDER BY sort_order ASC');
 				foreach ( $query->result() as $row )
 				{
 					$interests[] = array ( "id" => $row->interest_id, "description" => $row->interest_desc);
@@ -413,7 +412,7 @@ class Member_management extends Model {
 				return $interests;
 				break;
 			case "status":
-				$query = $this->db->query("SELECT * FROM member_status ORDER BY sort_order");
+				$query = $this->CI->db->query("SELECT * FROM member_status ORDER BY sort_order");
 				$status = array();
 				foreach($query->result() as $key => $val)
 				{
@@ -436,7 +435,7 @@ class Member_management extends Model {
 				return $filters;
 				break;
 			case "revisions":
-				$q = $this->db->where('member_id', $id)->order_by('date', 'desc')->get('member_revisions');
+				$q = $this->CI->db->where('member_id', $id)->order_by('date', 'desc')->get('member_revisions');
 				$r = $q->result_array();
 				
 				// Add "current" flag to latest member_data and dj profile revisions
@@ -468,12 +467,12 @@ class Member_management extends Model {
 		switch ( $type )
 		{
 			case "csv":
-				$this->load->dbutil();
-				$this->load->helper('file');
+				$this->CI->load->dbutil();
+				$this->CI->load->helper('file');
 				$delimiter = "\t";
 				$newline = "\r\n";
 		
-				$csv = $this->dbutil->csv_from_result($roster, $delimiter, $newline); 
+				$csv = $this->CI->dbutil->csv_from_result($roster, $delimiter, $newline); 
 				
 				$filepath = $this->root_path."system/csv/";
 				$basename = "member_data_".date("Y-m-d-g-i-s-A").".csv";	
@@ -553,7 +552,7 @@ class Member_management extends Model {
 		{
 			$query .= "SELECT * FROM member_data AS m INNER JOIN member_status AS s ON m.status_id=s.status_id WHERE member_id=".$val." UNION ";
 		}
-		return $this->db->query(substr($query,0,(strlen($query)-7)));
+		return $this->CI->db->query(substr($query,0,(strlen($query)-7)));
 	}
 	
 	function _clean_phone_numbers()
@@ -566,9 +565,9 @@ class Member_management extends Model {
 	
 		$key = rand(1000000,9999999);
 		$data = array ("member_id"=>$member_id, "sess_key"=>$key );
-		$this->db->query("DELETE FROM email_keys WHERE member_id=".$member_id);
-		$this->db->query($this->db->insert_string('email_keys',$data));
-		$email_query = $this->db->query("SELECT email_personal, first_name, last_name FROM member_data WHERE member_id=".$member_id);
+		$this->CI->db->query("DELETE FROM email_keys WHERE member_id=".$member_id);
+		$this->CI->db->query($this->CI->db->insert_string('email_keys',$data));
+		$email_query = $this->CI->db->query("SELECT email_personal, first_name, last_name FROM member_data WHERE member_id=".$member_id);
 		$row = $email_query->row();
 		$email = $row->email_personal;
 		
@@ -606,13 +605,13 @@ WYBC Eboard";
 				$msg = $name." has submitted a new application.";
 				$this->robot_email($this->admin_email, "[WYBC] New App: ".$name,  $msg." It is currently awaiting your attention. Thanks!
  -The WYBC Robot");
- 				$this->db->query("INSERT INTO member_updates (member_id, update_type, update_desc) VALUES (".$member_id.",1,'".$msg."')");
+ 				$this->CI->db->query("INSERT INTO member_updates (member_id, update_type, update_desc) VALUES (".$member_id.",1,'".$msg."')");
 				break;
 			case "verifier":
 				$msg = $name." has updated their data";
 				$this->robot_email($this->admin_email, "[WYBC] ".$msg, $msg.". It is currently awaiting your attention. Thanks!
 -The WYBC Robot");
- 				$this->db->query("INSERT INTO member_updates (member_id, update_type, update_desc) VALUES (".$member_id.",0,'".$msg."')");
+ 				$this->CI->db->query("INSERT INTO member_updates (member_id, update_type, update_desc) VALUES (".$member_id.",0,'".$msg."')");
 
 				break;
 		}
@@ -626,30 +625,30 @@ WYBC Eboard";
 			'smtp_user' => 'robot@wybc.com',
 			'smtp_pass' => 'nargo^%'
 		);
-		$this->load->library('email', $config);
-		$this->email->set_newline("\r\n");
+		$this->CI->load->library('email', $config);
+		$this->CI->email->set_newline("\r\n");
 		
-		$this->email->from('robot@wybc.com', 'WYBC');
-		$this->email->to($to);
+		$this->CI->email->from('robot@wybc.com', 'WYBC');
+		$this->CI->email->to($to);
 		
-		$this->email->subject($subject);
-		$this->email->message($message);
+		$this->CI->email->subject($subject);
+		$this->CI->email->message($message);
 		
-		if (!$this->email->send())
-			return "Ooops! There has been an error. Please copy and paste following error message in an email to gm@wybc.com. Thanks!<br /><br />".show_error($this->email->print_debugger());
+		if (!$this->CI->email->send())
+			return "Ooops! There has been an error. Please copy and paste following error message in an email to gm@wybc.com. Thanks!<br /><br />".show_error($this->CI->email->print_debugger());
 	}
 	
 	function delete_member ( $member_id )
 	{
-		$this->db->query("DELETE FROM member_data WHERE member_id=".$member_id);
-		$this->db->query("DELETE FROM team_roster WHERE member_id=".$member_id);
-		$this->db->query("DELETE FROM interests_roster WHERE member_id=".$member_id);
+		$this->CI->db->query("DELETE FROM member_data WHERE member_id=".$member_id);
+		$this->CI->db->query("DELETE FROM team_roster WHERE member_id=".$member_id);
+		$this->CI->db->query("DELETE FROM interests_roster WHERE member_id=".$member_id);
 	}
 	
 	function get_revision ( $id )
 	{
 		// Get revisions
-		$query = $this->db->where('id', $id)->get('member_revisions');
+		$query = $this->CI->db->where('id', $id)->get('member_revisions');
 		$result = $query->row();
 		
 		// Decode data
@@ -674,9 +673,9 @@ WYBC Eboard";
 		}
 		else
 		{	
-			$this->load->library('drupal');
+			$this->CI->load->library('drupal');
 			
-			$current = $this->drupal->load_profile( $member_id );
+			$current = $this->CI->drupal->load_profile( $member_id );
 		}
 		// Process changes
 		foreach( $revised as $key=>$val)
@@ -695,16 +694,16 @@ WYBC Eboard";
 	
 	function delete_event ( $event_id )
 	{
-		$this->db->where('event_id', $event_id)->delete("event_data");
-		$this->db->where('event_id', $event_id)->delete("event_attendence");
+		$this->CI->db->where('event_id', $event_id)->delete("event_data");
+		$this->CI->db->where('event_id', $event_id)->delete("event_attendence");
 	}
 	function invite( $member_id, $event_id )
 	{
-		$this->db->insert('event_attendence', array('member_id'=>$member_id, 'event_id'=>$event_id));
+		$this->CI->db->insert('event_attendence', array('member_id'=>$member_id, 'event_id'=>$event_id));
 	}
 	function uninvite( $member_id, $event_id )
 	{
-		$this->db->where('member_id', $member_id)->where('event_id', $event_id)->delete('event_attendence');
+		$this->CI->db->where('member_id', $member_id)->where('event_id', $event_id)->delete('event_attendence');
 	}
 	function take_attendence( $status = 'present', $member_id, $event_id )
 	{
@@ -716,7 +715,7 @@ WYBC Eboard";
 			$data = array ("present"=>0, "excused"=>1);
 		else 
 			return false;
-		$this->db->where('event_id', $event_id)->where('member_id', $member_id)->update( 'event_attendence', $data);
+		$this->CI->db->where('event_id', $event_id)->where('member_id', $member_id)->update( 'event_attendence', $data);
 	}
 	// HIGH LEVEL FUNCTIONS
 	
@@ -724,7 +723,7 @@ WYBC Eboard";
 	{
 		if ( $group == "active" )
 		{
-			$q = $this->db->where('status_id', 6)->get('member_data');
+			$q = $this->CI->db->where('status_id', 6)->get('member_data');
 			$actives = $q->result();
 			foreach($actives as $key=>$obj)
 			{
@@ -747,7 +746,7 @@ WYBC Eboard";
 	}
 	function fetch_attendence( $id )
 	{
-		$q = $this->db->from("event_attendence AS a ")->where('member_id', $id)->join('event_data as e ', 'e.event_id=a.event_id')->get();
+		$q = $this->CI->db->from("event_attendence AS a ")->where('member_id', $id)->join('event_data as e ', 'e.event_id=a.event_id')->get();
 		$r = $q->result_array();
 		foreach($r as $key=>$val)
 		{
@@ -770,7 +769,7 @@ WYBC Eboard";
 	}
 	function get_training()
 	{
-		$q = $this->db->where('type', 'training')->where('start_date > ', date("Y-m-d H:i:s"))->get('event_data');
+		$q = $this->CI->db->where('type', 'training')->where('start_date > ', date("Y-m-d H:i:s"))->get('event_data');
 		return $q->result_array();
 	
 	}

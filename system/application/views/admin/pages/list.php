@@ -21,6 +21,6 @@ $(function(){
 		"bJQueryUI": true,
 		"bPaginate": false,
 		"iDisplayLength": 10
-		});
 	});
 });
+</script>

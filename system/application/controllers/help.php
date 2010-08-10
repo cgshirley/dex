@@ -14,6 +14,7 @@ function __construct()
 		$this->data['title']="WYBC DJ Central";
 		$this->load->view('header', $this->data);
 		$this->load->view('help/index', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function ticket()
 	{	
@@ -35,7 +36,8 @@ function __construct()
 		$this->data['admin'] = FALSE;
 		$this->data['user_id'] = $this->session->userdata('user_id');
 		$this->load->view('header', $this->data);
-		$this->load->view('help/tickets', $this->data);		
+		$this->load->view('help/tickets', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 	function _ticket_form()
 	{
@@ -46,11 +48,14 @@ function __construct()
 		$this->data['user_id'] = $this->session->userdata('user_id');
 		$this->load->view('header', $this->data);
 		$this->load->view('help/ticket', $this->data);
+		$this->load->view('footer', $this->data);
+
 	}
 	function _ticket_success()
 	{
 		$this->data['title'] = "Ticket Successfully Submitted";
 		$this->load->view('header', $this->data);
 		$this->load->view('help/ticket_success', $this->data);
+		$this->load->view('footer', $this->data);
 	}
 }
