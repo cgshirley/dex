@@ -40,10 +40,35 @@ class Podcasting extends Model {
     }
 
     function get_podcast_entries($id) {
-        $sql = "SELECT * FROM podcast_entries WHERE id = ?;";
+        $sql = "SELECT * FROM podcast_entries WHERE podcast_id = ?;";
         $result = $this->db->query($sql, array($title));
         return collect($result);
     }
 
+    function add_podcast($member_id, $title, $subtitle, $author, $description, $copyright, $link, $image = NULL) {
+        $sql = "INSERT INTO podcasts (member_id, title, subtitle, author, description, copyright, link, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        $result = $this->db->query($sql, array($member_id, $title, $subtitle, $author, $description, $copyright, $link, $image));
+        $id = $result->result_array()['id']; // FIXME: get autoincremented ID number
+        return $id;
+    }
+
+    function add_podcast_entry($podcast_id, $title, $subtitle, $author, $description, $file) {
+        $sql = "INSERT INTO podcast_entries (podcast_id, title, subtitle, author, description, file_link, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW());";
+        $result = $this->db->query($sql, array($podcast_id, $title, $subtitle, $author, $description, $file));
+        $id = $result->result_array()['id']; // FIXME: same as above
+        return $id;
+    }
+
+    function delete_podcast_entry($podcast_id) {
+        $sql = "DELETE FROM podcast_entries WHERE podcast_id = ?;";
+        $result = $this->db->query($sql, array($podcast_id));
+        return $result;
+    }
+
+    // TODO: expand these functions for exporting to podcast.awk
+    function export_directives($podcast_id) {
+        $podcast = get_podcast($podcast_id);
+        $entries = get_podcast_entries($podcast_id);
+    }
 }
 ?>
