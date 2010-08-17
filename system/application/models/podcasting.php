@@ -17,7 +17,7 @@ class Podcasting extends Model {
     }
 
     function get_podcast($id) {
-        $sql = "SELECT (id, member_id, title, subtitle, artist, copyright, link, image, description) FROM podcasts WHERE id = ?;";
+        $sql = "SELECT * FROM podcasts WHERE id = ?;";
         $result = $this->db->query($sql, array($id));
         return $result->row_array();
     }
@@ -28,8 +28,13 @@ class Podcasting extends Model {
         return collect($result);
     }
 
-    function get_podcasts_titled($title) {
-        $sql = "SELECT * FROM podcasts WHERE title = ?;";
+    function get_podcasts_titled($title, $use_like = FALSE) {
+        if ($use_like) {
+            $title = "%" . $this->db->escape_like_str($title) . "%";
+            $sql = "SELECT * FROM podcasts WHERE title LIKE " . $title . ";";
+        } else {
+            $sql = "SELECT * FROM podcasts WHERE title = ?;";
+        }
         $result = $this->db->query($sql, array($title));
         return collect($result);
     }
