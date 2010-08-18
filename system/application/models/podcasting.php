@@ -21,9 +21,9 @@ class Podcasting extends Model {
         return $retval;
     }
 
-    function get_podcast() {
+    function get_podcast($id = NULL) {
         $this->db->from('podcasts');
-        $this->db->where('id', $this->podcast_id);
+        $this->db->where('id', ($id) ? $id : $this->podcast_id);
         $result = $this->db->get();
         $this->podcast_data = $result->row_array();
         return $this->podcast_data;
@@ -48,7 +48,6 @@ class Podcasting extends Model {
     }
 
     function get_podcast_entries($id = NULL) {
-        $sql = "SELECT * FROM podcast_entries WHERE podcast_id = ?;";
         $this->db->from('podcast_entries');
         $this->db->where('podcast_id', ($id) ? $id : $this->podcast_id);
         $result = $this->db->get();
@@ -71,10 +70,36 @@ class Podcasting extends Model {
         return $this->db->delete('podcast_entries', $this->entry_data;
     }
 
-    // TODO: expand these functions for exporting to podcast.awk
-    function export_directives($podcast_id) {
+    static function directive($d, $v) {
+        if ($v == NULL) {
+            return "";
+        }
+        return $d . " " . $v . "\n";
+    }
+
+    function export_directives($podcast_id = NULL) {
         $podcast = get_podcast($podcast_id);
         $entries = get_podcast_entries($podcast_id);
+        $basestr = "channel\n";
+        $basestr .= directive("title", $podcast['title']);
+        $basestr .= directive("subtitle", $podcast['subtitle']);
+        $basestr .= directive("description", str_replace("\n", "", $podcast['description']));
+        $basestr .= directive("copyright", $podcast['copyright']);
+        $basestr .= directive("language", $podcast['language']);
+        $basestr .= directive("image", $podcast['image']);
+        $basestr .= directive("link", $podcast['link']);
+        foreach ($entries as $item) {
+            $basestr .= "item\n";
+            $basestr .= directive("title", $item['title']);
+            $basestr .= directive("subtitle", $item['subtitle']);
+            $basestr .= directive("description", $item['description']);
+            $basestr .= directive("guid", $item['guid']);
+            $basestr .= "file " . $item['file_length'] .  " " . $item['file_link'];
+            $basestr .= directive("duration", $item['duration']);
+            $basestr .= directive("published", $item['timestamp']);
+            $basestr .= directive("keywords", $item['keywords']);
+        }
+        return $basestr;
     }
 }
 ?>
