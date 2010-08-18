@@ -2,6 +2,11 @@
 
 class Podcasting extends Model {
 
+    public var $member_id;
+    public var $podcast_id;
+    public var $podcast_data;
+    public var $entry_data;
+
     function Podcasting() {
         parent::Model();
     }
@@ -16,53 +21,54 @@ class Podcasting extends Model {
         return $retval;
     }
 
-    function get_podcast($id) {
-        $sql = "SELECT * FROM podcasts WHERE id = ?;";
-        $result = $this->db->query($sql, array($id));
-        return $result->row_array();
+    function get_podcast() {
+        $this->db->from('podcasts');
+        $this->db->where('id', $this->podcast_id);
+        $result = $this->db->get();
+        $this->podcast_data = $result->row_array();
+        return $this->podcast_data;
     }
 
-    function get_member_podcasts($member_id) {
-        $sql = "SELECT * FROM podcasts WHERE member_id = ?;";
-        $result = $this->db->query($sql, array($id));
-        return collect($result);
+    function get_member_podcasts() {
+        $this->db->from('podcasts');
+        $this->db->where('member_id', $this->member_id);
+        $result = $this->db->get();
+        $this->podcast_data = collect($result);
+        return $this->podcast_data;
     }
 
-    function get_podcasts_titled($title, $use_like = FALSE) {
-        if ($use_like) {
-            $title = "%" . $this->db->escape_like_str($title) . "%";
-            $sql = "SELECT * FROM podcasts WHERE title LIKE " . $title . ";";
-        } else {
+    function get_podcasts_titled($title = NULL) {
             $sql = "SELECT * FROM podcasts WHERE title = ?;";
         }
-        $result = $this->db->query($sql, array($title));
-        return collect($result);
+        $this->db->from('podcasts');
+        $this->db->where('title', ($title) ? $title : $this->podcast_data['title']);
+        $result = $this->db->get();
+        $this->podcast_data = collect($result);
+        return $this->podcast_data;
     }
 
-    function get_podcast_entries($id) {
+    function get_podcast_entries($id = NULL) {
         $sql = "SELECT * FROM podcast_entries WHERE podcast_id = ?;";
-        $result = $this->db->query($sql, array($title));
-        return collect($result);
+        $this->db->from('podcast_entries');
+        $this->db->where('podcast_id', ($id) ? $id : $this->podcast_id);
+        $result = $this->db->get();
+        $this->entry_data = collect($result);
+        return $this->entry_data;
     }
 
-    function add_podcast($member_id, $title, $subtitle, $author, $description, $copyright, $link, $image = NULL) {
-        $sql = "INSERT INTO podcasts (member_id, title, subtitle, author, description, copyright, link, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
-        $result = $this->db->query($sql, array($member_id, $title, $subtitle, $author, $description, $copyright, $link, $image));
-        $id = $result->result_array()['id']; // FIXME: get autoincremented ID number
-        return $id;
+    function add_podcast() {
+        return $this->db->insert('podcasts', $this->podcast_data);
     }
 
-    function add_podcast_entry($podcast_id, $title, $subtitle, $author, $description, $file) {
-        $sql = "INSERT INTO podcast_entries (podcast_id, title, subtitle, author, description, file_link, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW());";
-        $result = $this->db->query($sql, array($podcast_id, $title, $subtitle, $author, $description, $file));
-        $id = $result->result_array()['id']; // FIXME: same as above
-        return $id;
+    function add_podcast_entry() {
+        return $this->db->insert('podcast_entries', $this->entry_data);
     }
 
-    function delete_podcast_entry($podcast_id) {
-        $sql = "DELETE FROM podcast_entries WHERE podcast_id = ?;";
-        $result = $this->db->query($sql, array($podcast_id));
-        return $result;
+    function delete_podcast_entry($id = NULL) {
+        if ($id) {
+            return $this->db->delete('podcast_entries', array('id' => $id));
+        }
+        return $this->db->delete('podcast_entries', $this->entry_data;
     }
 
     // TODO: expand these functions for exporting to podcast.awk
