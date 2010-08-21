@@ -9,6 +9,15 @@
 
 class Castd {
 
+    // helper function for next function below, generates a directive or empty string
+    // depending on whether $v is NULL
+    private function directive($d, $v) {
+        if ($v == NULL) {
+            return "";
+        }
+        return $d . " " . $v . "\n";
+    }
+
     function export_directives($podcast, $entries) {
         $podcast = get_podcast($podcast_id);
         $entries = get_podcast_entries($podcast_id);

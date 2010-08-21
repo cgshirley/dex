@@ -95,14 +95,5 @@ class Podcasting extends Model {
         $this->entry_data['file_size'] = filesize($url);
         $this->entry_data['duration'] = $duration;
     }
-
-    // helper function for next function below, generates a directive or empty string
-    // depending on whether $v is NULL
-    static function directive($d, $v) {
-        if ($v == NULL) {
-            return "";
-        }
-        return $d . " " . $v . "\n";
-    }
 }
 ?>
