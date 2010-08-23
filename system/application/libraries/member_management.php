@@ -95,10 +95,10 @@ class Member_management{
 						"reference_two_relationship"=>"Reference Two Relationship",
 						"department"=>"department");
 
-    	function __construct()
-    	{
+    function __construct()
+    {
 		$this->CI =& get_instance();
-    	}
+    }
     	
 	function prep_member_data( $data )
 	{
