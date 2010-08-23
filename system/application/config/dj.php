@@ -1,6 +1,8 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-/* DEX specific configuration options are configured via this file. */
+/**
+*	DEX specific configuration options are configured via this file. 
+*/
 
 $config['url_root'] = "http://localhost/wybc/";
 $config['url_img'] = "http://localhost/wybc/assets/images/";

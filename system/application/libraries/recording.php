@@ -1,4 +1,6 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
 
 /* IMPORTANT: DEPENDENCIES NOTE
  * This library works with the WYBC recording system, and requires
@@ -8,57 +10,76 @@
 
 class Recording
 {
-	protected $ci;
-
-	public function __construct()
-	{
-        if (!isset($this->config->item('recording_listener_fifo'))) {
+    protected $ci;
+    
+    public function __construct()
+    {
+        if (!isset($this->config->item('recording_listener_fifo')))
+        {
             show_error("DEX Error: you must set the recording_listener_fifo config item");
         }
-		$this->ci =& get_instance();
-	}
-
-    // Starts a recording.
-    // this function makes you give a duration even though the recording backend has it
-    // optional.
-    // @param $url full URL to the streaming audio resource (HTTP, RTSP, among others work)
-    // @param $filename filename (with extension) to write to
-    // @param $duration an associative array with 'hours', 'minutes', and 'seconds' set specifying length to record
-    // @return TRUE on success
-    public function record($url, $filename, $duration, $codec = NULL) {
-        if (is_array($duration)) {
+        $this->ci =& get_instance();
+    }
+    
+    /**
+     *	Starts a recording.
+     * 	This function makes you give a duration even though the recording 
+     *	backend has it optional.
+     *
+     *	@param $url full URL to the streaming audio resource (HTTP, RTSP, among others work)
+     *	@param $filename filename (with extension) to write to
+     *	@param $duration an associative array with 'hours', 'minutes', and 'seconds' set specifying length to record
+     *	@return TRUE on success
+     */
+    public function record($url, $filename, $duration, $codec = NULL)
+    {
+        if (is_array($duration))
+        {
             $timespec = sprintf("%02d:%02d:%02d", $duration['hours'], $duration['minutes'], $duration['seconds']);
-        } else {
+        }
+        else
+        {
             $timespec = $duration; // accept as-is...
         }
         $fp = fopen($this->config->item('recording_listener_fifo'), "w");
-        if ($fp) {
+        if ($fp)
+        {
             flock($fp, LOCK_EX);
             fprintf($fp, "url %s\nfilename %s\nduration %s\n", $url, $filename, $duration);
-            if ($codec) {
+            if ($codec)
+            {
                 fprintf($fp, "codec %s\n", $codec);
             }
             fprintf($fp, "done\n");
             flock($fp, LOCK_UN);
             return TRUE;
-        } else {
+        }
+        else
+        {
             return FALSE;
         }
     }
     
-    // Maps a resource name to a URL.
-    // to use this function you have to set the recording_url_maps configuration item to
-    // an associative array, like thus:
-    // config['recording_url_maps'] = array("generic_name" => "http://specific/url/", ...);
-    // @param $resource generic resource name
-    // @return specific URL, or NULL if the configuration array isn't set
-    public function whatis($resource) {
-        if (!isset($this->config->item('recording_url_maps'))) {
+    /**
+     *	Maps a resource name to a URL.
+     *	to use this function you have to set the recording_url_maps 
+     *	configuration item to an associative array, like thus:
+     * 	$config['recording_url_maps'] = array("generic_name" => "http://specific/url/", ...);
+     *
+     * 	@param $resource generic resource name
+     * 	@return specific URL, or NULL if the configuration array isn't set
+     */
+    public function whatis($resource)
+    {
+        if (!isset($this->config->item('recording_url_maps')))
+        {
             return NULL;
-        } else {
-            return $this->config->item('recording_url_maps')[$resource];
+        }
+        else
+        {
+            $maps = $this->config->item('recording_url_maps');
+            return $maps[$resource];
         }
     }
 }
 ?>
-
