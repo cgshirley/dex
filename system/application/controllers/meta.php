@@ -341,11 +341,6 @@ var $user_id;
 		$this->load->library('drupal');
 		$this->drupal->list_episodes(127);
 	}
-	function rcrdr()
-	{
-		$this->load->library('recording');
-		$this->recording->record("x", array("x","aux1"), array($this->uri->segment(3)."-".rand(0, 1000)));
-	}
 	function archives( $id )
 	{	
 		$dir = "/Volumes/sharkhives/".$id.".mp3";

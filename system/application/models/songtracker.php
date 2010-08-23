@@ -584,7 +584,11 @@ class Songtracker extends Model {
 		$live = $this->load->view("meta/live_info", $live_data, TRUE);
 		$this->save_to_log();
 		$this->load->library('recording');
-		$this->recording->record("x", array("x"), array("auto"), $_POST['episode']);
+        $url = $this->recording->whatis('go_live_default');
+        $duration['hours'] = 1; $duration['minutes'] = 0; $duration['seconds'] = 0;
+        // TODO: figure out how long the show actually is instead of guessing 1 hour
+        $this->recording->record($url, $_POST['episode'], $duration);
+        // TODO: make the filenames something reasonable and stop using the POST data
 		echo json_encode(array("live"=>$live, "hide_controls"=>"false", "status" => "posted", "alert"=>$alert ));
 	}
 	function live_info( $live = FALSE )
@@ -1121,44 +1125,6 @@ class Songtracker extends Model {
 			}	
 		}
 		return $array;
-	}
-	function recorder_interface( $type )
-	{
-
-		// where is the socket server?
-		$host="10.13.40.3";
-		$port = 10005;
-	
-		// open a client connection
-		$fp = fsockopen ($host, $port, $errno, $errstr);
-		switch ( $type )
-		{
-			case "start":
-				//$this->show = $this->load_show_data();
-				$data = array ("length"=>5, "show_id"=>1, "show_name"=>"Brandon and Sherwin Get Paid. ON ICE.");
-				$message = serialize($data);
-				break;
-		}
-		if (!$fp)
-		{
-			$result = "Error: could not open socket connection";
-		}
-		else
-		{
-	  		// get the welcome message
-			$result = fgets ($fp, 1024);
-	  		// write the user string to the socket
-		 	fputs ($fp, $message);
-	  		// get the result
-		 	$result .= fgets ($fp, 1024);
-		 	// close the connection
-	  		fputs ($fp, "END");
-		 	fclose ($fp);
-
-	  		// now print it to the browser
-		}
-		
-		echo $result;
 	}
 	function reset_db()
 	{
