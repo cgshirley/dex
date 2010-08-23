@@ -2,8 +2,8 @@
 
 class Podcasting extends Model {
 
-    public var $podcast_data;
-    public var $entry_data;
+    public $podcast_data;
+    public $entry_data;
 
     function Podcasting() {
         parent::Model();
@@ -12,8 +12,8 @@ class Podcasting extends Model {
     // run once. supposed to not overwrite tables, but nonetheless,
     // run only once.
     function generate_tables() {
-        $podcasts = "CREATE TABLE IF NOT EXISTS podcasts (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), member_id INT NOT NULL, title VARCHAR(255) NOT NULL, subtitle VARCHAR(255), description VARCHAR(1024), copyright VARCHAR(255), language VARCHAR(64), image VARCHAR(255), link VARCHAR(255));"
-        $entries = "CREATE TABLE IF NOT EXISTS entries (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), podcast_id INT NOT NULL, title VARCHAR(255) NOT NULL, subtitle VARCHAR(255), description VARCHAR(1024), file_link VARCHAR(255), file_size INT, duration VARCHAR(255), timestamp DATETIME NOT NULL, guid VARCHAR(255), keywords VARCHAR(512));"
+        $podcasts = "CREATE TABLE IF NOT EXISTS podcasts (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), member_id INT NOT NULL, title VARCHAR(255) NOT NULL, subtitle VARCHAR(255), description VARCHAR(1024), copyright VARCHAR(255), language VARCHAR(64), image VARCHAR(255), link VARCHAR(255));";
+        $entries = "CREATE TABLE IF NOT EXISTS entries (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), podcast_id INT NOT NULL, title VARCHAR(255) NOT NULL, subtitle VARCHAR(255), description VARCHAR(1024), file_link VARCHAR(255), file_size INT, duration VARCHAR(255), timestamp DATETIME NOT NULL, guid VARCHAR(255), keywords VARCHAR(512));";
         return $this->db->query($podcasts) && $this->db->query($entries);
     }
 
