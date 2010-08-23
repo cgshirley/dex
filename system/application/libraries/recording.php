@@ -59,4 +59,6 @@ class Recording
             return $this->config->item('recording_url_maps')[$resource];
         }
     }
+}
+?>
 
