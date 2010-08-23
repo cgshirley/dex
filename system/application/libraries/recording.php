@@ -14,7 +14,8 @@ class Recording
     
     public function __construct()
     {
-        if (!isset($this->config->item('recording_listener_fifo')))
+    	  $fifo = $this->config->item('recording_listener_fifo');
+        if(empty($fifo))
         {
             show_error("DEX Error: you must set the recording_listener_fifo config item");
         }
@@ -71,13 +72,14 @@ class Recording
      */
     public function whatis($resource)
     {
-        if (!isset($this->config->item('recording_url_maps')))
+        $maps = $this->config->item('recording_url_maps');
+       
+        if(empty($maps))
         {
             return NULL;
         }
         else
         {
-            $maps = $this->config->item('recording_url_maps');
             return $maps[$resource];
         }
     }
