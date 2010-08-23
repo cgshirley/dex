@@ -4,9 +4,7 @@
 *	DEX specific configuration options are configured via this file. 
 */
 
-$config['url_root'] = "http://localhost/wybc/";
 $config['url_img'] = "http://localhost/wybc/assets/images/";
-$config['path_root'] = "/Applications/XAMPP/xamppfiles/htdocs/wybc/";
 $config['path_img'] = "/Applications/XAMPP/xamppfiles/htdocs/wybc/assets/images/";
 
 // must be set (mbs) - path to the named pipe that the recording program listens on
