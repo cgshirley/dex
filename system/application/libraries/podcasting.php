@@ -2,12 +2,12 @@
 
 /**
  * 	Interface to castd, the WYBC podcasting daemon.
- * 	@package Castd
+ * 	@package Podcasting
  * 	@author Sherwin Soltani
- * 	@version 0.1
+ * 	@version 0.2
  */
 
-class Castd
+class Podcasting
 {
     /**
      * 	Helper function for next function below, generates a directive 
@@ -22,7 +22,36 @@ class Castd
         return $d . " " . $v . "\n";
     }
     
-    function export_directives($podcast, $entries)
+    /**
+     * Write data into a file, but if all the data
+     * is not written, then truncate the file
+     * before closing.
+     * @param string $stuff data to write
+     * @param string $file path to file to write to
+     * @return TRUE on success */
+    private function write_out($stuff, $file)
+    {
+        $fp = fopen($file, "w");
+        if (!$fp) {
+            return FALSE;
+        }
+        $rv = fwrite($fp, $stuff);
+        if ($rv == strlen($stuff)) {
+            fclose($fp);
+            return TRUE;
+        } else {
+            ftruncate($fp, 0);
+            fclose($fp);
+            return FALSE;
+        }
+    }
+
+    /**
+     * Export a podcast
+     * @param $podcast_id primary key to the podcast table identifying the podcast
+     * @return TRUE on success (file written)
+     */
+    function export($podcast_id)
     {
         $podcast = get_podcast($podcast_id);
         $entries = get_podcast_entries($podcast_id);
@@ -46,7 +75,8 @@ class Castd
             $basestr .= directive("published", $item['timestamp']);
             $basestr .= directive("keywords", $item['keywords']);
         }
-        return $basestr;
+        $filename = sprintf("podcast%d", $podcast_id);
+        return write_out($basestr, $filename);
     }
 }
 ?>

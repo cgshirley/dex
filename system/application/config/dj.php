@@ -14,5 +14,10 @@ $config['recording_listener_fifo'] = "/bzzz/wrong";
 // url
 $config['recording_url_maps'] = array("go_live_default" => "http://SET/ME");
 
+// mbs - use the WYBC podcasting backend?
+$config['use_wybc_podcasting'] = TRUE;
+// if using WYBC podcasting, set export directory
+$config['wybc_podcasting_export_dir'] = '/set/me';
+
 /* End of file dj.php */
 /* Location: ./system/application/config/dj.php */

@@ -117,5 +117,19 @@ class Podcasting extends Model {
         $this->entry_data['file_size'] = filesize($url);
         $this->entry_data['duration'] = $duration;
     }
+
+    /**
+     * Export the podcast to web-space (i.e. publish it).
+     * @param $id if supplied, the id of the podcast, otherwise use $this->podcast_data['id']
+     * @return TRUE on success */
+    function export($id = NULL) {
+        if ($this->config->item('use_wybc_podcasting')) {
+            $this->load->library('podcasting');
+            return $this->podcasting->export(($id) ? $id : $this->podcast_data['id']);
+        } else {
+            // XXX: Add your own podcasting export interface calls here
+            return FALSE;
+        }
+    }
 }
 ?>
