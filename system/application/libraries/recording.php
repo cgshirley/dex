@@ -83,5 +83,11 @@ class Recording
             return $maps[$resource];
         }
     }
+    
+    public function get_extension($url)
+    {
+        $split_str = preg_split("\.", $url);
+        return $split_str[sizeof($split_str) - 1];
+    }
 }
 ?>
