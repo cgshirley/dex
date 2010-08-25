@@ -583,13 +583,15 @@ class Songtracker extends Model {
 						);
 		$live = $this->load->view("meta/live_info", $live_data, TRUE);
 		$this->save_to_log();
-		$this->load->library('recording');
-        $url = $this->recording->whatis('go_live_default');
-        $extension = "." . $this->recording->get_extension($url);
-        $duration['hours'] = 1; $duration['minutes'] = 0; $duration['seconds'] = 0;
-        // TODO: figure out how long the show actually is instead of guessing 1 hour
-        $this->recording->record($url, $_POST['episode'] . $extension, $duration);
-        // TODO: make the filenames something reasonable and stop using the POST data
+        if ($this->config->item('use_recording')) {
+            $this->load->library('recording');
+            $url = $this->recording->whatis('go_live_default');
+            $extension = "." . $this->recording->get_extension($url);
+            $duration['hours'] = 1; $duration['minutes'] = 0; $duration['seconds'] = 0;
+            // TODO: figure out how long the show actually is instead of guessing 1 hour
+            $this->recording->record($url, $_POST['episode'] . $extension, $duration);
+            // TODO: make the filenames something reasonable and stop using the POST data
+        }
 		echo json_encode(array("live"=>$live, "hide_controls"=>"false", "status" => "posted", "alert"=>$alert ));
 	}
 	function live_info( $live = FALSE )
