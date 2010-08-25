@@ -321,7 +321,7 @@ var $data;
 	}
 	function app_submitted()
 	{
-		$this->load->view('roster/application_header', $this-data);
+		$this->load->view('roster/application_header', $this->data);
 		$this->load->view('roster/app_submitted', $this->data);
 		$this->load->view('footer', $this->data);
 	}
