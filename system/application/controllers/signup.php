@@ -1,11 +1,20 @@
 <?php
-
+/*
+*	Note: create new table
+*
+*	CREATE TABLE `wybc`.`signup` (
+*		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+*		`name` VARCHAR( 255 ) NOT NULL ,
+*		`email` VARCHAR( 255 ) NOT NULL
+*		) ENGINE = MYISAM ;
+*
+*/
 class Signup extends Controller {
 
     var $data;
 
-    public Signup() {
-        parent::Controller();
+    function __construct() {
+        parent::__construct();
         $this->auth->restrict(20);
         $this->data['js'][] = "jquery-datatables.php";
         $this->data['css'][] = "datatables.css";
@@ -13,7 +22,7 @@ class Signup extends Controller {
 
     public function index() {
         $this->data['title'] = "WYBC Sign Up!";
-        $this->data['signups'] = get_all();
+        $this->data['signups'] = $this->get_all();
         $this->load->view('header', $this->data);
         $this->load->view('signup/list', $this->data);
         $this->load->view('footer', $this->data);
@@ -46,9 +55,8 @@ class Signup extends Controller {
     private function get_all() {
         $this->db->select('name, email');
         $result = $this->db->get('signup');
-        $rv = $result->result_array();
+        return $result->result_array();
     }
 
 }
 ?>
-
