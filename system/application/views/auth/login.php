@@ -17,7 +17,7 @@
 			Username/Email:<br />
 			<input type="text" name="username" value="<?php echo set_value('username'); ?>" size="50" class="form" /><?php echo form_error('username'); ?><br /><br />
 			Password:<br />
-			<input type="password" name="password" onclick="kbHit(event, 'login')" value="<?php echo set_value('password'); ?>" size="50" class="form" /><?php echo form_error('password'); ?><br /><br />
+			<input type="password" name="password" onkeydown="kbHit(event, 'login')" value="<?php echo set_value('password'); ?>" size="50" class="form" /><?php echo form_error('password'); ?><br /><br />
 			<input type="submit" value="Login" name="login" />
 			</form>
 			<a href="http://dev.wybcx.com/user/password" class='red_button left'>Forgot password?</a>

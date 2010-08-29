@@ -60,7 +60,7 @@ class Signup extends Controller {
 
     public function reset() {
         $this->db->query("DROP TABLE IF EXISTS signup;");
-        $this->db->query("CREATE TABLE IF NOT EXISTS signup (id INT NOT NULL, PRIMARY KEY(id), name VARCHAR(255), email VARCHAR(255), interests VARCHAR(1024));");
+        $this->db->query("CREATE TABLE IF NOT EXISTS signup (id INT NOT NULLAUTO_INCREMENT, PRIMARY KEY(id), name VARCHAR(255), email VARCHAR(255), interests VARCHAR(1024));");
     }
 
 }
