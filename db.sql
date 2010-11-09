@@ -13,6 +13,37 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Database: `wybc`
 --
 
+CREATE TABLE `albums` (
+`id` INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`title` VARCHAR( 150 ) NOT NULL ,
+`date` DATE NOT NULL ,
+`description` VARCHAR( 1000 ) NOT NULL ,
+`artist_id` INT( 10 ) NOT NULL ,
+`created` TIMESTAMP NOT NULL ,
+INDEX ( `artist_id` )
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+CREATE TABLE `artists` (
+`id` INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`name` VARCHAR( 100 ) NOT NULL ,
+`description` VARCHAR( 1000 ) NOT NULL ,
+`lastfm_url` VARCHAR( 100 ) NOT NULL ,
+`listeners` INT( 15 ) NOT NULL ,
+`validated` TIMESTAMP NOT NULL ,
+`created` TIMESTAMP NOT NULL
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+CREATE TABLE `songs` (
+`id` INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`title` VARCHAR( 255 ) NOT NULL ,
+`track_number` INT( 3 ) NOT NULL ,
+`musicbrainz_id` VARCHAR( 100 ) NOT NULL ,
+`artist_id` INT( 10 ) NOT NULL ,
+`album_id` INT( 10 ) NOT NULL ,
+`created` TIMESTAMP NOT NULL ,
+INDEX ( `artist_id` , `album_id` )
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 -- --------------------------------------------------------
 
 --
